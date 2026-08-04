@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -7,8 +8,6 @@ root_dir = file_path.parent
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 
-
-import os
 import streamlit as st
 import pandas as pd
 import scipy.stats as stats
@@ -16,7 +15,6 @@ import time
 import plotly.express as px
 import plotly.graph_objects as go
 from src.mlproject.utils import load_object
-from src.mlproject.pipelines.training_pipeline import TrainingPipeline
 
 # --- 1. Page Configuration & Premium CSS ---
 st.set_page_config(page_title="STUDY-INSIGHT", layout="wide", page_icon="📊")
@@ -141,32 +139,21 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- 2. Self-Healing Dynamic Model Loader ---
+# --- 2. Load Artifacts Safely ---
 @st.cache_resource
-def load_or_train_models():
-    preprocessor_path = 'artifacts/preprocessor.pkl'
-    model_path = 'artifacts/model.pkl'
-    
-    if not os.path.exists(preprocessor_path) or not os.path.exists(model_path):
-        os.makedirs('artifacts', exist_ok=True)
-        train_pipeline = TrainingPipeline()
-        train_pipeline.run_pipeline()
-        
-    preprocessor = load_object(preprocessor_path)
-    model = load_object(model_path)
-    return preprocessor, model
-
-try:
-    preprocessor, model = load_or_train_models()
-except Exception as e:
+def load_models():
     try:
-        train_pipeline = TrainingPipeline()
-        train_pipeline.run_pipeline()
         preprocessor = load_object('artifacts/preprocessor.pkl')
         model = load_object('artifacts/model.pkl')
-    except Exception as inner_e:
-        st.error(f"⚠️ Critical error initializing model pipeline: {inner_e}")
-        st.stop()
+        return preprocessor, model
+    except Exception as e:
+        return None, None
+
+preprocessor, model = load_models()
+
+if preprocessor is None or model is None:
+    st.error("⚠️ Model artifacts (`preprocessor.pkl` and `model.pkl`) not found in the `artifacts/` directory. Please ensure they are tracked and committed to your GitHub repository.")
+    st.stop()
 
 # --- 3. App Header ---
 st.markdown("""
