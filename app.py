@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import scipy.stats as stats
@@ -5,6 +6,7 @@ import time
 import plotly.express as px
 import plotly.graph_objects as go
 from src.mlproject.utils import load_object
+from src.mlproject.pipelines.training_pipeline import TrainingPipeline
 
 # --- 1. Page Configuration & Premium CSS ---
 st.set_page_config(page_title="STUDY-INSIGHT", layout="wide", page_icon="📊")
@@ -129,20 +131,34 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- 2. Load Artifacts ---
+# --- 2. Self-Healing Dynamic Model Loader ---
 @st.cache_resource
-def load_models():
-    preprocessor = load_object('artifacts/preprocessor.pkl')
-    model = load_object('artifacts/model.pkl')
+def load_or_train_models():
+    preprocessor_path = 'artifacts/preprocessor.pkl'
+    model_path = 'artifacts/model.pkl'
+    
+    if not os.path.exists(preprocessor_path) or not os.path.exists(model_path):
+        os.makedirs('artifacts', exist_ok=True)
+        train_pipeline = TrainingPipeline()
+        train_pipeline.run_pipeline()
+        
+    preprocessor = load_object(preprocessor_path)
+    model = load_object(model_path)
     return preprocessor, model
 
 try:
-    preprocessor, model = load_models()
+    preprocessor, model = load_or_train_models()
 except Exception as e:
-    st.error("⚠️ Artifacts missing. Please train the model first.")
-    st.stop()
+    try:
+        train_pipeline = TrainingPipeline()
+        train_pipeline.run_pipeline()
+        preprocessor = load_object('artifacts/preprocessor.pkl')
+        model = load_object('artifacts/model.pkl')
+    except Exception as inner_e:
+        st.error(f"⚠️ Critical error initializing model pipeline: {inner_e}")
+        st.stop()
 
-# --- 3. App Header (new professional logo mark) ---
+# --- 3. App Header ---
 st.markdown("""
 <div class="brand-header">
     <div class="brand-mark">
@@ -179,12 +195,12 @@ with col_input:
             writing_score = st.slider("Writing Score", 0, 100, 70)
 
             st.markdown("<br>", unsafe_allow_html=True)
-            submitted = st.form_submit_button("Run Analytics ")
+            submitted = st.form_submit_button("Run Analytics")
 
 # === RIGHT COLUMN: ANALYTICS TABS ===
 with col_display:
     if not submitted:
-        st.info("👈 **Configure the student parameters on the left and click 'Run Analytics ' to generate the dashboard.**")
+        st.info("👈 **Configure the student parameters on the left and click 'Run Analytics' to generate the dashboard.**")
     else:
         tab_insights, tab_diagnostics = st.tabs(["📊 Prediction & Insights", "⚙️ Model Analytics"])
         
@@ -273,6 +289,6 @@ with col_display:
 # --- Footer ---
 st.markdown("""
     <div class="footer">
-         Developed by Rahul Kumar Srivastava
+        Developed by Rahul Kumar Srivastava
     </div>
 """, unsafe_allow_html=True)
