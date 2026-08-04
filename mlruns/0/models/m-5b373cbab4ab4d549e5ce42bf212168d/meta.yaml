@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/Rahul%20Kumar%20Srivasta/Desktop/MLproject/mlruns/0/models/m-5b373cbab4ab4d549e5ce42bf212168d/artifacts
+creation_timestamp: 1785698449401
+experiment_id: '0'
+last_updated_timestamp: 1785698453647
+model_id: m-5b373cbab4ab4d549e5ce42bf212168d
+model_type: null
+name: model
+source_run_id: dc7a4caeb2f24b718c099e6919b9ce33
+status: 2
+status_message: null

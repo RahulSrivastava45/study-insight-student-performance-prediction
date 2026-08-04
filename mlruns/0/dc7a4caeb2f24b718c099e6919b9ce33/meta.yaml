@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/Rahul%20Kumar%20Srivasta/Desktop/MLproject/mlruns/0/dc7a4caeb2f24b718c099e6919b9ce33/artifacts
+end_time: 1785698453657
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: dc7a4caeb2f24b718c099e6919b9ce33
+run_name: legendary-cow-513
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1785698449330
+status: 3
+tags: []
+user_id: anacondademon
