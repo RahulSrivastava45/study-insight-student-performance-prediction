@@ -155,7 +155,7 @@ def load_models():
 try:
     preprocessor, model = load_models()
 except Exception as e:
-    st.error(f"⚠️ Error loading models: {e}. If this is a scikit-learn version error, ensure requirements.txt uses scikit-learn==1.9.0")
+    st.error(f"⚠️ Error loading models: {e}. Make sure your requirements.txt matches your local training environment exactly.")
     st.stop()
 
 
@@ -217,7 +217,8 @@ with col_display:
             prediction_raw = model.predict(transformed_data)[0]
             prediction = min(max(prediction_raw, 0), 100)
         except Exception as e:
-            st.error(f"❌ **Error during prediction:** {e}. Please ensure your requirements.txt has scikit-learn==1.9.0")
+            st.error(f"❌ **Error during prediction:** {e}.")
+            st.warning("💡 **Version Mismatch:** The scikit-learn version used to train the model locally does not match the version currently installed on Streamlit Cloud.")
             st.stop()
         
         math_median, math_std, class_size = 66.0, 15.16, 60
