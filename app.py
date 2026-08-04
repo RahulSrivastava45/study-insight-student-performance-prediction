@@ -139,21 +139,47 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- 2. Load Artifacts Safely ---
+# --- 2. Self-Healing Dynamic Model Loader ---
 @st.cache_resource
-def load_models():
+def load_or_train_models():
+    preprocessor_path = 'artifacts/preprocessor.pkl'
+    model_path = 'artifacts/model.pkl'
+    
+    def train_and_load():
+        from src.mlproject.pipelines.training_pipeline import TrainingPipeline
+        os.makedirs('artifacts', exist_ok=True)
+        pipeline = TrainingPipeline()
+        pipeline.run_pipeline()
+        return load_object(preprocessor_path), load_object(model_path)
+    
+    # If missing, train natively
+    if not os.path.exists(preprocessor_path) or not os.path.exists(model_path):
+        return train_and_load()
+        
     try:
-        preprocessor = load_object('artifacts/preprocessor.pkl')
-        model = load_object('artifacts/model.pkl')
+        preprocessor = load_object(preprocessor_path)
+        model = load_object(model_path)
+        
+        # DUMMY TEST: Check if the preprocessor actually works in this Python version
+        test_df = pd.DataFrame([{
+            "gender": "male", "race_ethnicity": "group A",
+            "parental_level_of_education": "bachelor's degree", 
+            "lunch": "standard", "test_preparation_course": "none", 
+            "reading_score": 70, "writing_score": 70
+        }])
+        preprocessor.transform(test_df)
+        
         return preprocessor, model
     except Exception as e:
-        return None, None
+        # If the dummy test crashes due to a scikit-learn version mismatch, retrain natively
+        return train_and_load()
 
-preprocessor, model = load_models()
-
-if preprocessor is None or model is None:
-    st.error("⚠️ Model artifacts (`preprocessor.pkl` and `model.pkl`) not found in the `artifacts/` directory. Please ensure they are tracked and committed to your GitHub repository.")
+try:
+    preprocessor, model = load_or_train_models()
+except Exception as e:
+    st.error(f"⚠️ Critical error initializing model pipeline: {e}")
     st.stop()
+
 
 # --- 3. App Header ---
 st.markdown("""
