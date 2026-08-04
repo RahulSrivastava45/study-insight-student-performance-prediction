@@ -1,3 +1,13 @@
+import sys
+from pathlib import Path
+
+# Force Python to recognize the root directory
+file_path = Path(__file__).resolve()
+root_dir = file_path.parent
+if str(root_dir) not in sys.path:
+    sys.path.append(str(root_dir))
+
+
 import os
 import streamlit as st
 import pandas as pd
