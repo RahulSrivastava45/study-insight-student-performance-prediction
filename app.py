@@ -139,45 +139,23 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- 2. Self-Healing Dynamic Model Loader ---
+# --- 2. Load Artifacts (Simplified because training pipeline is empty) ---
 @st.cache_resource
-def load_or_train_models():
+def load_models():
     preprocessor_path = 'artifacts/preprocessor.pkl'
     model_path = 'artifacts/model.pkl'
     
-    def train_and_load():
-        from src.mlproject.pipelines.training_pipeline import TrainingPipeline
-        os.makedirs('artifacts', exist_ok=True)
-        pipeline = TrainingPipeline()
-        pipeline.run_pipeline()
-        return load_object(preprocessor_path), load_object(model_path)
-    
-    # If missing, train natively
     if not os.path.exists(preprocessor_path) or not os.path.exists(model_path):
-        return train_and_load()
+        raise FileNotFoundError("Missing preprocessor.pkl or model.pkl in the artifacts folder. Please ensure they are pushed to GitHub.")
         
-    try:
-        preprocessor = load_object(preprocessor_path)
-        model = load_object(model_path)
-        
-        # DUMMY TEST: Check if the preprocessor actually works in this Python version
-        test_df = pd.DataFrame([{
-            "gender": "male", "race_ethnicity": "group A",
-            "parental_level_of_education": "bachelor's degree", 
-            "lunch": "standard", "test_preparation_course": "none", 
-            "reading_score": 70, "writing_score": 70
-        }])
-        preprocessor.transform(test_df)
-        
-        return preprocessor, model
-    except Exception as e:
-        # If the dummy test crashes due to a scikit-learn version mismatch, retrain natively
-        return train_and_load()
+    preprocessor = load_object(preprocessor_path)
+    model = load_object(model_path)
+    return preprocessor, model
 
 try:
-    preprocessor, model = load_or_train_models()
+    preprocessor, model = load_models()
 except Exception as e:
-    st.error(f"⚠️ Critical error initializing model pipeline: {e}")
+    st.error(f"⚠️ Error loading models: {e}. If this is a scikit-learn version error, ensure requirements.txt uses scikit-learn==1.9.0")
     st.stop()
 
 
@@ -234,9 +212,13 @@ with col_display:
             "test_preparation_course": test_prep, "reading_score": reading_score, "writing_score": writing_score
         }])
         
-        transformed_data = preprocessor.transform(input_data)
-        prediction_raw = model.predict(transformed_data)[0]
-        prediction = min(max(prediction_raw, 0), 100)
+        try:
+            transformed_data = preprocessor.transform(input_data)
+            prediction_raw = model.predict(transformed_data)[0]
+            prediction = min(max(prediction_raw, 0), 100)
+        except Exception as e:
+            st.error(f"❌ **Error during prediction:** {e}. Please ensure your requirements.txt has scikit-learn==1.9.0")
+            st.stop()
         
         math_median, math_std, class_size = 66.0, 15.16, 60
         percentile = stats.norm.cdf(prediction, loc=math_median, scale=math_std) * 100
@@ -268,10 +250,12 @@ with col_display:
                 if test_prep == "none":
                     sim_data = input_data.copy()
                     sim_data["test_preparation_course"] = "completed"
-                    sim_pred = min(max(model.predict(preprocessor.transform(sim_data))[0], 0), 100)
-                    gain = sim_pred - prediction
-                    
-                    st.info(f"**Potential Gain:** Taking a test preparation course is projected to add **+{gain:.1f} points** to the math score, raising it to **{sim_pred:.1f}**.")
+                    try:
+                        sim_pred = min(max(model.predict(preprocessor.transform(sim_data))[0], 0), 100)
+                        gain = sim_pred - prediction
+                        st.info(f"**Potential Gain:** Taking a test preparation course is projected to add **+{gain:.1f} points** to the math score, raising it to **{sim_pred:.1f}**.")
+                    except:
+                        pass
                 else:
                     st.success("✅ **Maximized:** The student has already completed the test preparation course, contributing positively to their current predicted score.")
                 
