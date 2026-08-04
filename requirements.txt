@@ -7,4 +7,6 @@ scikit-learn
 seaborn
 catboost
 xgboost
+plotly
+scipy
 #-e .
