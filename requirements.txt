@@ -1,12 +1,15 @@
-numpy
-pandas
 python-dotenv
 mysql-connector-python
 pymysql
-scikit-learn
+streamlit
+pandas
+scikit-learn==1.9.0
+numpy
+scipy
 seaborn
+joblib
+threadpoolctl
 catboost
 xgboost
 plotly
-scipy
 #-e .
