@@ -187,7 +187,7 @@ col_input, col_display = st.columns([1, 2.5], gap="large")
 # === LEFT COLUMN: CONTROL PANEL ===
 with col_input:
     with st.container(border=True):
-        st.markdown("###  Parameters")
+        st.markdown("### 🧑‍🎓 Parameters")
 
         with st.form("prediction_form", clear_on_submit=False):
             gender = st.selectbox("Gender", ["male", "female"])
@@ -292,7 +292,7 @@ with col_display:
                 # Determine the target column name
                 target_col = 'math score' if 'math score' in full_data.columns else 'math_score'
                 
-              # Transform data and generate 1000 predictions
+                # Transform data and generate 1000 predictions
                 X_full = full_data.drop(columns=[target_col], errors='ignore')
                 transformed_full = preprocessor.transform(X_full)
                 
@@ -317,12 +317,15 @@ with col_display:
             # -------------------------------
             
             sample_diff["Error (Residual)"] = sample_diff["Predicted Score"] - sample_diff["Actual Score"]
+            # Calculate the absolute magnitude of the error for coloring
+            sample_diff["Error Magnitude"] = sample_diff["Error (Residual)"].abs()
             
             fig_scatter = px.scatter(
                 sample_diff, x="Actual Score", y="Predicted Score", 
                 hover_data=["Student ID", "Error (Residual)"],
                 template="plotly_dark",
-                color="Error (Residual)", color_continuous_scale="Tealgrn",
+                color="Error Magnitude", 
+                color_continuous_scale="Reds", # Changed to a red color scale
                 opacity=0.7 # Makes the 1000 points slightly transparent for better visualization
             )
             fig_scatter.add_shape(type="line", x0=0, y0=0, x1=100, y1=100, line=dict(color="rgba(255,255,255,0.5)", dash="dash"))
