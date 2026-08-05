@@ -17,12 +17,12 @@ The predictive model is deployed as a custom, highly interactive web app on Stre
 ### 1. Prediction & Insights Panel
 Drop in a student's profile parameters to get a real-time predicted math score, global percentile, and specific advice based on historical data.
 
-![Prediction Dashboard](images/Screenshot%202026-08-05%20170502.jpg)
+![Prediction Dashboard](images/Screenshot%202026-08-05%20170502.png)
 
 ### 2. Interactive Model Analytics
 Machine learning shouldn't be a black box. The diagnostics tab visually maps the model's actual vs. predicted performance across 1,000 test data points, complete with a dynamic error color scale so you can see exactly where the model excels.
 
-![Model Analytics](images/Screenshot%202026-08-05%20170520.jpg)
+![Model Analytics](images/Screenshot%202026-08-05%20170520.png)
 
 ---
 
@@ -61,7 +61,7 @@ We pitted multiple regression algorithms against each other to find the best fit
 ### Phase 3: MLOps & Experiment Tracking
 To keep the project production-ready, we integrated **MLflow** via DagsHub. This ensures every parameter is tracked, metrics are logged, and all registered models are strictly version-controlled.
 
-![MLflow Tracking](images/Screenshot%202026-08-04%20200640.jpg)
+![MLflow Tracking](images/Screenshot%202026-08-04%20200640.png)
 
 ---
 
