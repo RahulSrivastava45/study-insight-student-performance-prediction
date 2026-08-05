@@ -221,7 +221,7 @@ with col_display:
             st.warning("💡 **Version Mismatch:** The scikit-learn version used to train the model locally does not match the version currently installed on Streamlit Cloud.")
             st.stop()
         
-        math_median, math_std, class_size = 66.0, 15.16, 60
+        math_median, math_std, class_size = 66.0, 15.16, 1000
         percentile = stats.norm.cdf(prediction, loc=math_median, scale=math_std) * 100
         estimated_rank = max(1, int((1 - (percentile / 100)) * class_size))
         
