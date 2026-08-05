@@ -281,7 +281,7 @@ with col_display:
             # --- DYNAMIC PLOT GENERATION ---
             try:
                 # Attempt to load the raw data from common locations
-                data_path = 'artifacts/data.csv' if os.path.exists('artifacts/data.csv') else 'notebook/data/stud.csv'
+                data_path = 'notebook/data/raw.csv'
                 full_data = pd.read_csv(data_path)
                 
                 # Determine the target column name
