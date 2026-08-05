@@ -1,8 +1,8 @@
 # 📊 Study-Insight: Student Performance Analytics Platform
 
-🎈 **Live Web App Link:** [study-insight-student-performance-prediction.streamlit.app](https://study-insight-student-performance-prediction-73zly6fczprhcq4fi.streamlit.app/)
-📈 **Dataset:** [View on Kaggle](https://www.kaggle.com/datasets/spscientist/students-performance-in-exams)
-🔄 **Experiment Tracking:** [View on MLflow/DagsHub](https://dagshub.com/anacondademon/MLproject.mlflow)
+* 🎈 **Live Web App Link:** [study-insight-student-performance-prediction.streamlit.app](https://study-insight-student-performance-prediction-73zly6fczprhcq4fi.streamlit.app/)
+* 📈 **Dataset:** [View on Kaggle](https://www.kaggle.com/datasets/spscientist/students-performance-in-exams)
+* 🔄 **Experiment Tracking:** [View on MLflow/DagsHub](https://dagshub.com/anacondademon/MLproject.mlflow)
 
 ## 📌 Overview 
 What actually drives a student's academic success? Is it strictly study time, or do hidden factors like nutrition and demographics play a bigger role? 
@@ -17,12 +17,12 @@ The predictive model is deployed as a custom, highly interactive web app on Stre
 ### 1. Prediction & Insights Panel
 Drop in a student's profile parameters to get a real-time predicted math score, global percentile, and specific advice based on historical data.
 
-![Prediction Dashboard](Screenshot%202026-08-05%20170502.jpg)
+![Prediction Dashboard](<Screenshot 2026-08-05 170502.jpg>)
 
 ### 2. Interactive Model Analytics
 Machine learning shouldn't be a black box. The diagnostics tab visually maps the model's actual vs. predicted performance across 1,000 test data points, complete with a dynamic error color scale so you can see exactly where the model excels.
 
-![Model Analytics](Screenshot%202026-08-05%20170520.jpg)
+![Model Analytics](<Screenshot 2026-08-05 170520.jpg>)
 
 ---
 
@@ -34,13 +34,13 @@ Before training any models, we dug into the dataset to uncover the actual storie
 **The Insights:**
 * **The Nutrition Factor:** This was one of the strongest predictors of success. Students on standard lunch programs scored, on average, **11 points higher** in math compared to students on free or reduced lunch programs. 
 
-![EDA - Lunch Impact](Screenshot%202026-08-05%20170716.png)
+![EDA - Lunch Impact](<Screenshot 2026-08-05 170716.png>)
 
 * **Gender Disparities:** While male students averaged slightly higher in math (approx. 68 vs 63), female students significantly outperformed their male counterparts in reading and writing averages.
 
-![EDA - Gender Distribution 1](Screenshot%202026-08-05%20170644.png)
+![EDA - Gender Distribution 1](<Screenshot 2026-08-05 170644.png>)
 
-![EDA - Gender Distribution 2](Screenshot%202026-08-05%20170659.png)
+![EDA - Gender Distribution 2](<Screenshot 2026-08-05 170659.png>)
 
 ### Phase 2: Model Training & Evaluation
 We pitted multiple regression algorithms against each other to find the best fit, tracking $R^2$ Scores and Mean Absolute Error (MAE). 
@@ -54,14 +54,14 @@ We pitted multiple regression algorithms against each other to find the best fit
 
 *The takeaway? A well-processed dataset with clear linear relationships doesn't need overly complex ensemble methods. Linear Regression took the crown, offering both the highest accuracy and the best interpretability.*
 
-![Model Leaderboard](Screenshot%202026-08-05%20170756.png)
+![Model Leaderboard](<Screenshot 2026-08-05 170756.png>)
 
-![Regression Plots](Screenshot%202026-08-05%20170808.png)
+![Regression Plots](<Screenshot 2026-08-05 170808.png>)
 
 ### Phase 3: MLOps & Experiment Tracking
 To keep the project production-ready, we integrated **MLflow** via DagsHub. This ensures every parameter is tracked, metrics are logged, and all registered models are strictly version-controlled.
 
-![MLflow Tracking](Screenshot%202026-08-04%20200640.jpg)
+![MLflow Tracking](<Screenshot 2026-08-04 200640.jpg>)
 
 ---
 
