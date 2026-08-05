@@ -187,7 +187,7 @@ col_input, col_display = st.columns([1, 2.5], gap="large")
 # === LEFT COLUMN: CONTROL PANEL ===
 with col_input:
     with st.container(border=True):
-        st.markdown("### 🧑‍🎓 Parameters")
+        st.markdown("###  Parameters")
 
         with st.form("prediction_form", clear_on_submit=False):
             gender = st.selectbox("Gender", ["male", "female"])
@@ -260,7 +260,13 @@ with col_display:
                     try:
                         sim_pred = min(max(model.predict(preprocessor.transform(sim_data))[0], 0), 100)
                         gain = sim_pred - prediction
-                        st.info(f"**Potential Gain:** Taking a test preparation course is projected to add **+{gain:.1f} points** to the math score, raising it to **{sim_pred:.1f}**.")
+                        
+                        if gain > 0.1:
+                            st.info(f"📈 **Growth Opportunity:** Completing a test preparation course could boost the predicted math score by **+{gain:.1f} points**, bringing it up to **{sim_pred:.1f}**. This is a highly recommended step!")
+                        elif gain < -0.1:
+                            st.warning(f"🎯 **Alternative Strategy:** A standard test prep course might not be the most effective use of time here. Based on historical trends, it correlates with a slight dip of **{abs(gain):.1f} points**. We recommend focusing on personalized tutoring or targeted self-study instead.")
+                        else:
+                            st.info(f"⚖️ **Study Focus:** A formal test prep course doesn't show a significant advantage for this specific profile (the score remains around **{sim_pred:.1f}**). Time might be better spent focusing directly on core subject practice.")
                     except:
                         pass
                 else:
@@ -292,7 +298,7 @@ with col_display:
                 # Determine the target column name
                 target_col = 'math score' if 'math score' in full_data.columns else 'math_score'
                 
-                # Transform data and generate 1000 predictions
+              # Transform data and generate 1000 predictions
                 X_full = full_data.drop(columns=[target_col], errors='ignore')
                 transformed_full = preprocessor.transform(X_full)
                 
@@ -317,15 +323,12 @@ with col_display:
             # -------------------------------
             
             sample_diff["Error (Residual)"] = sample_diff["Predicted Score"] - sample_diff["Actual Score"]
-            # Calculate the absolute magnitude of the error for coloring
-            sample_diff["Error Magnitude"] = sample_diff["Error (Residual)"].abs()
             
             fig_scatter = px.scatter(
                 sample_diff, x="Actual Score", y="Predicted Score", 
                 hover_data=["Student ID", "Error (Residual)"],
                 template="plotly_dark",
-                color="Error Magnitude", 
-                color_continuous_scale="Reds", # Changed to a red color scale
+                color="Error (Residual)", color_continuous_scale="Tealgrn",
                 opacity=0.7 # Makes the 1000 points slightly transparent for better visualization
             )
             fig_scatter.add_shape(type="line", x0=0, y0=0, x1=100, y1=100, line=dict(color="rgba(255,255,255,0.5)", dash="dash"))
