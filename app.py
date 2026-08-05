@@ -221,6 +221,7 @@ with col_display:
             st.warning("💡 **Version Mismatch:** The scikit-learn version used to train the model locally does not match the version currently installed on Streamlit Cloud.")
             st.stop()
         
+        # Updated Class Size to 1000
         math_median, math_std, class_size = 66.0, 15.16, 1000
         percentile = stats.norm.cdf(prediction, loc=math_median, scale=math_std) * 100
         estimated_rank = max(1, int((1 - (percentile / 100)) * class_size))
@@ -277,20 +278,46 @@ with col_display:
             st.markdown("#### 📊 Actual vs. Predicted Plot")
             st.write("Hover over the data points to see the exact residual errors.")
             
-            sample_diff = pd.DataFrame({
-                "Student ID": [101, 102, 103, 104, 105, 106, 107, 108],
-                "Actual Score": [91.0, 53.0, 80.0, 74.0, 84.0, 52.0, 62.0, 65.0],
-                "Predicted Score": [76.5, 59.0, 77.0, 76.8, 87.5, 43.5, 62.0, 67.1],
-            })
+            # --- DYNAMIC PLOT GENERATION ---
+            try:
+                # Attempt to load the raw data from common locations
+                data_path = 'artifacts/data.csv' if os.path.exists('artifacts/data.csv') else 'notebook/data/stud.csv'
+                full_data = pd.read_csv(data_path)
+                
+                # Determine the target column name
+                target_col = 'math score' if 'math score' in full_data.columns else 'math_score'
+                
+                # Transform data and generate 1000 predictions
+                X_full = full_data.drop(columns=[target_col], errors='ignore')
+                transformed_full = preprocessor.transform(X_full)
+                predictions_full = model.predict(transformed_full)
+                
+                sample_diff = pd.DataFrame({
+                    "Student ID": full_data.index + 1,
+                    "Actual Score": full_data[target_col],
+                    "Predicted Score": predictions_full
+                })
+                
+            except Exception as e:
+                # Fallback to dummy data if the file is missing so the app doesn't crash
+                st.warning("⚠️ Could not locate the raw CSV file to plot all 1000 points. Showing a subset instead.")
+                sample_diff = pd.DataFrame({
+                    "Student ID": [101, 102, 103, 104, 105, 106, 107, 108],
+                    "Actual Score": [91.0, 53.0, 80.0, 74.0, 84.0, 52.0, 62.0, 65.0],
+                    "Predicted Score": [76.5, 59.0, 77.0, 76.8, 87.5, 43.5, 62.0, 67.1],
+                })
+            # -------------------------------
+            
             sample_diff["Error (Residual)"] = sample_diff["Predicted Score"] - sample_diff["Actual Score"]
             
             fig_scatter = px.scatter(
                 sample_diff, x="Actual Score", y="Predicted Score", 
                 hover_data=["Student ID", "Error (Residual)"],
                 template="plotly_dark",
-                color="Error (Residual)", color_continuous_scale="Tealgrn"
+                color="Error (Residual)", color_continuous_scale="Tealgrn",
+                opacity=0.7 # Makes the 1000 points slightly transparent for better visualization
             )
-            fig_scatter.add_shape(type="line", x0=40, y0=40, x1=100, y1=100, line=dict(color="rgba(255,255,255,0.3)", dash="dash"))
+            fig_scatter.add_shape(type="line", x0=0, y0=0, x1=100, y1=100, line=dict(color="rgba(255,255,255,0.5)", dash="dash"))
             fig_scatter.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
             st.plotly_chart(fig_scatter, use_container_width=True)
 
