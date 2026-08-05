@@ -111,6 +111,11 @@ st.markdown("""
         padding: 1rem 1rem 0.6rem 1rem;
     }
 
+    /* ---------- Hide Streamlit Toolbar ---------- */
+    [data-testid="stToolbar"] {
+        visibility: hidden !important;
+    }
+
     /* ---------- Tabs ---------- */
     .stTabs [data-baseweb="tab-list"] {
         gap: 2rem;
