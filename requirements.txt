@@ -1,16 +1,13 @@
-python-dotenv
-mysql-connector-python
-pymysql
 streamlit
 pandas
-scikit-learn==1.3.0
 numpy==1.26.4
-scipy
-seaborn
-joblib
-threadpoolctl
-catboost
-xgboost
-plotly
-starlette==0.37.2
-#-e .
+scikit-learn==1.3.0
+scipy==1.11.4
+seaborn==0.13.2
+joblib==1.3.2
+plotly==5.18.0
+catboost==1.2.2
+xgboost==2.0.3
+pymysql==1.1.0
+mysql-connector-python==8.2.0
+python-dotenv==1.0.0
