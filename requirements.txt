@@ -12,4 +12,5 @@ threadpoolctl
 catboost
 xgboost
 plotly
+starlette==0.37.2
 #-e .
