@@ -1,5 +1,5 @@
 # 📊 Study-Insight: 
-#Student Performance Analytics Platform
+## Student Performance Analytics Platform
 
 *  **Live Web App Link:** [study-insight-student-performance-prediction.streamlit.app](https://study-insight-student-performance-prediction-73zly6fczprhcq4fi.streamlit.app/)
 *  **Dataset:** [View on Kaggle](https://www.kaggle.com/datasets/spscientist/students-performance-in-exams)
