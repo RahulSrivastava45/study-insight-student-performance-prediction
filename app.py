@@ -287,10 +287,13 @@ with col_display:
                 # Determine the target column name
                 target_col = 'math score' if 'math score' in full_data.columns else 'math_score'
                 
-                # Transform data and generate 1000 predictions
+              # Transform data and generate 1000 predictions
                 X_full = full_data.drop(columns=[target_col], errors='ignore')
                 transformed_full = preprocessor.transform(X_full)
-                predictions_full = model.predict(transformed_full)
+                
+                # Predict and cap the values strictly between 0 and 100
+                predictions_raw = model.predict(transformed_full)
+                predictions_full = [min(max(pred, 0), 100) for pred in predictions_raw]
                 
                 sample_diff = pd.DataFrame({
                     "Student ID": full_data.index + 1,
