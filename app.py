@@ -187,7 +187,7 @@ col_input, col_display = st.columns([1, 2.5], gap="large")
 # === LEFT COLUMN: CONTROL PANEL ===
 with col_input:
     with st.container(border=True):
-        st.markdown("### 🧑‍🎓 Parameters")
+        st.markdown("###  Parameters")
 
         with st.form("prediction_form", clear_on_submit=False):
             gender = st.selectbox("Gender", ["male", "female"])
